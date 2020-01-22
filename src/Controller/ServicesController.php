@@ -177,4 +177,68 @@ class ServicesController extends AbstractController{
         return new Response('Walk planned for pet with id'.$mascota->
         getId());
     }
+    /**
+     * @Route("/guardar/vacuna/")
+     * @Method({"GET"})
+     */
+    public function registrarVacuna(){
+
+        $em = $this->getDoctrine()->getManager();
+        $mascota = $doctrine->getRepository(Mascota::class)
+        ->find($_GET["mascota"]);
+
+        $recordatorio = new Recordatorio();
+        $recordatorio->setProximafecha(new Datetime($_GET["fecha"]));
+        $recordatorio->setPeriodocantidad(0);
+        $recordatorio->setPeriodounidad("noaplica");
+        $evento = new Evento();
+        $evento->setEstado("NOCUMPLIDO");
+        $evento->setMascota($mascota);
+        $evento->setRecordatorio($recordatorio);
+        $vacuna = new Vacuna();
+        $vacuna->setNombre($_GET["nombre"]);
+        $vacuna->setCantidad($_GET["cantidad"]);
+        $vacuna->setEvento($evento);
+       
+        $em->persist($recordatorio);
+        $em->persist($evento);
+        $em->persist($vacuna);
+        $em->flush();
+
+        return new Response('Created vaccine'.$vacuna->getNombre(). 'for the pet with id '.$mascota->getId().
+        ' with owner\'s name '.$usuario->getNombre());
+    }
+
+    /**
+     * @Route("/guardar/pareja/")
+     * @Method({"GET"})
+     */
+    public function registrarEmparejamiento(){
+
+        $em = $this->getDoctrine()->getManager();
+        $mascota = $doctrine->getRepository(Mascota::class)
+        ->find($_GET["mascota"]);
+
+        $recordatorio = new Recordatorio();
+        $recordatorio->setProximafecha(new Datetime($_GET["fecha"]));
+        $recordatorio->setPeriodocantidad(0);
+        $recordatorio->setPeriodounidad("noaplica");
+        $evento = new Evento();
+        $evento->setEstado("NOCUMPLIDO");
+        $evento->setMascota($mascota);
+        $evento->setRecordatorio($recordatorio);
+        $emparejamiento = new Emparejamiento();
+        $emparejamiento->setMacho($_GET["macho"]);
+        $emparejamiento->setHembra($_GET["hembra"]);
+        $emparejamiento->setEvento($evento);
+       
+        $em->persist($recordatorio);
+        $em->persist($evento);
+        $em->persist($emparejamiento);
+        $em->flush();
+
+        return new Response('Created love match for the pet with id '.$mascota->getId().
+        ' with owner\'s name '.$usuario->getNombre());
+    }
+
 }
