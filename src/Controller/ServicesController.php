@@ -241,4 +241,113 @@ class ServicesController extends AbstractController{
         ' with owner\'s name '.$usuario->getNombre());
     }
 
+    /**
+     * @Route("/eliminar/pareja/")
+     * @Method({"GET"})
+     */
+    public function eliminarEmparejamiento($emparejamiento){
+
+        $doctrine = $this->getDoctrine();
+        $empareja = $doctrine->getRepository(Emparejamiento::class)
+        ->find($emparejamiento);
+
+        unset($empareja);
+
+        return new Response('Delete love match ');
+    }
+
+    /**
+     * @Route("/eliminar/vacuna/")
+     * @Method({"GET"})
+     */
+    public function eliminarVacuna($vacuna){
+
+        $doctrine = $this->getDoctrine();
+        $vacu = $doctrine->getRepository(Vacuna::class)
+        ->find($vacuna);
+
+        unset($vacu);
+
+        return new Response('Delete vaccine ');
+    }
+
+    /**
+     * @Route("/eliminar/paseo/")
+     * @Method({"GET"})
+     */
+    public function eliminarPaseo($paseo){
+
+        $doctrine = $this->getDoctrine();
+        $pas = $doctrine->getRepository(Paseo::class)
+        ->find($paseo);
+
+        unset($pas);
+
+        return new Response('Delete walk planned');
+    }
+
+    /**
+     * @Route("/modificar/paseo/")
+     * @Method({"GET"})
+     */
+    public function modificarPaseo($paseo){
+
+        $doctrine = $this->getDoctrine();
+        $em = $doctrine->getManager();
+        $pass = $doctrine->getRepository(Paseo::class)
+        ->find($paseo);
+
+        $recordatorio = new Recordatorio();
+        $recordatorio->setProximafecha(new Datetime($_GET["fecha"]));
+        $recordatorio->setPeriodocantidad(0);
+        $recordatorio->setPeriodounidad("noaplica");
+        $evento = new Evento();
+        $evento->setEstado("NOCUMPLIDO");
+        $evento->setMascota($mascota);
+        $evento->setRecordatorio($recordatorio);
+        $pass->setLugar($_GET["lugar"]);
+        $pass->setEvento($evento);
+
+        $em->persist($recordatorio);
+        $em->persist($evento);
+        $em->persist($pass);
+
+        $em->flush();
+
+        return new Response('Modified walk planned for pet with id'.$mascota->
+        getId());
+    }
+
+    /**
+     * @Route("/modificar/vacuna/")
+     * @Method({"GET"})
+     */
+    public function modificarVacuna($vacuna){
+
+        $doctrine = $this->getDoctrine();
+        $em = $doctrine->getManager();
+        $vac = $doctrine->getRepository(Paseo::class)
+        ->find($vacuna);
+
+        $recordatorio = new Recordatorio();
+        $recordatorio->setProximafecha(new Datetime($_GET["fecha"]));
+        $recordatorio->setPeriodocantidad(0);
+        $recordatorio->setPeriodounidad("noaplica");
+        $evento = new Evento();
+        $evento->setEstado("NOCUMPLIDO");
+        $evento->setMascota($mascota);
+        $evento->setRecordatorio($recordatorio);
+        $vac->setNombre($_GET["nombre"]);
+        $vac->setCantidad($_GET["cantidad"]);
+        $vac->setEvento($evento);
+       
+        $em->persist($recordatorio);
+        $em->persist($evento);
+        $em->persist($vacuna);
+        $em->flush();
+
+        return new Response('Modified vaccine'.$vacuna->getNombre(). 'for the pet with id '.$mascota->getId().
+        ' with owner\'s name '.$usuario->getNombre());
+    }
+
 }
